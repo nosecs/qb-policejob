@@ -1,4 +1,5 @@
 -- Variables
+
 local CurrentStatusList = {}
 local Casings = {}
 local CurrentCasing = nil
@@ -9,19 +10,18 @@ local CurrentFingerprint = 0
 local shotAmount = 0
 
 local StatusList = {
-    ['fight'] = Lang:t('evidence.red_hands'),
-    ['widepupils'] = Lang:t('evidence.wide_pupils'),
-    ['redeyes'] = Lang:t('evidence.red_eyes'),
-    ['weedsmell'] = Lang:t('evidence.weed_smell'),
-    ['gunpowder'] = Lang:t('evidence.gunpowder'),
-    ['chemicals'] = Lang:t('evidence.chemicals'),
-    ['heavybreath'] = Lang:t('evidence.heavy_breathing'),
-    ['sweat'] = Lang:t('evidence.sweat'),
-    ['handbleed'] = Lang:t('evidence.handbleed'),
-    ['confused'] = Lang:t('evidence.confused'),
-    ['alcohol'] = Lang:t('evidence.alcohol'),
-    ["heavyalcohol"] = Lang:t('evidence.heavy_alcohol'),
-    ["agitated"] = Lang:t('evidence.agitated')
+    ['fight'] = 'Red hands',
+    ['widepupils'] = 'Wide pupils',
+    ['redeyes'] = 'Red eyes',
+    ['weedsmell'] = 'Smells like weed',
+    ['gunpowder'] = 'Gunpowder in clothing',
+    ['chemicals'] = 'smells chemical',
+    ['heavybreath'] = 'Breathes heavily',
+    ['sweat'] = 'Sweats a lot',
+    ['handbleed'] = 'Blood on hands',
+    ['confused'] = 'Confused',
+    ['alcohol'] = 'Smells like alcohol',
+    ['heavyalcohol'] = 'Smells very much like alcohol'
 }
 
 local WhitelistedWeapons = {
@@ -34,6 +34,7 @@ local WhitelistedWeapons = {
 }
 
 -- Functions
+
 local function DrawText3D(x, y, z, text)
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
@@ -74,6 +75,7 @@ local function DnaHash(s)
 end
 
 -- Events
+
 RegisterNetEvent('evidence:client:SetStatus', function(statusId, time)
     if time > 0 and StatusList[statusId] then
         if (CurrentStatusList == nil or CurrentStatusList[statusId] == nil) or
@@ -82,7 +84,7 @@ RegisterNetEvent('evidence:client:SetStatus', function(statusId, time)
                 text = StatusList[statusId],
                 time = time
             }
-            QBCore.Functions.Notify(CurrentStatusList[statusId].text, 'error')
+            QBCore.Functions.Notify(''..CurrentStatusList[statusId].text..'', 'error')
         end
     elseif StatusList[statusId] then
         CurrentStatusList[statusId] = nil
@@ -126,7 +128,7 @@ end)
 RegisterNetEvent('evidence:client:ClearBlooddropsInArea', function()
     local pos = GetEntityCoords(PlayerPedId())
     local blooddropList = {}
-    QBCore.Functions.Progressbar('clear_blooddrops', Lang:t("progressbar.blood_clear"), 5000, false, true, {
+    QBCore.Functions.Progressbar('clear_blooddrops', 'Clearing blood..', 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
         disableMouse = false,
@@ -141,17 +143,17 @@ RegisterNetEvent('evidence:client:ClearBlooddropsInArea', function()
                 end
             end
             TriggerServerEvent('evidence:server:ClearBlooddrops', blooddropList)
-            QBCore.Functions.Notify(Lang:t("success.blood_clear"), "success")
+            QBCore.Functions.Notify('Blood cleared :)')
         end
     end, function() -- Cancel
-        QBCore.Functions.Notify(Lang:t("error.blood_not_cleared"), "error")
+        QBCore.Functions.Notify('Blood not cleared..', 'error')
     end)
 end)
 
 RegisterNetEvent('evidence:client:AddCasing', function(casingId, weapon, coords, serie)
     Casings[casingId] = {
         type = weapon,
-        serie = serie and serie or Lang:t('evidence.serial_not_visible'),
+        serie = serie and serie or 'Serial number not visible..',
         coords = {
             x = coords.x,
             y = coords.y,
@@ -168,7 +170,7 @@ end)
 RegisterNetEvent('evidence:client:ClearCasingsInArea', function()
     local pos = GetEntityCoords(PlayerPedId())
     local casingList = {}
-    QBCore.Functions.Progressbar('clear_casings', Lang:t("progressbar.bullet_casing"), 5000, false, true, {
+    QBCore.Functions.Progressbar('clear_casings', 'Removing bullet sleeves..', 5000, false, true, {
         disableMovement = false,
         disableCarMovement = false,
         disableMouse = false,
@@ -182,11 +184,10 @@ RegisterNetEvent('evidence:client:ClearCasingsInArea', function()
                 end
             end
             TriggerServerEvent('evidence:server:ClearCasings', casingList)
-            QBCore.Functions.Notify(Lang:t("success.bullet_casing_removed"), "success")
-            
+            QBCore.Functions.Notify('Bullet sleeves removed :)')
         end
     end, function() -- Cancel
-        QBCore.Functions.Notify(Lang:t("error.bullet_casing_not_removed"), "error")
+        QBCore.Functions.Notify('Bullet sleeves not removed', 'error')
     end)
 end)
 
@@ -238,7 +239,7 @@ CreateThread(function()
         if CurrentCasing and CurrentCasing ~= 0 then
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos -vector3(Casings[CurrentCasing].coords.x, Casings[CurrentCasing].coords.y, Casings[CurrentCasing].coords.z)) < 1.5 then
-                DrawText3D(Casings[CurrentCasing].coords.x, Casings[CurrentCasing].coords.y, Casings[CurrentCasing].coords.z, Lang:t('info.bullet_casing', {value = Casings[CurrentCasing].type}))
+                DrawText3D(Casings[CurrentCasing].coords.x, Casings[CurrentCasing].coords.y, Casings[CurrentCasing].coords.z, '~g~G~w~ - Bullet sleeve ~b~#' .. Casings[CurrentCasing].type)
                 if IsControlJustReleased(0, 47) then
                     local s1, s2 = GetStreetNameAtCoord(Casings[CurrentCasing].coords.x, Casings[CurrentCasing].coords.y, Casings[CurrentCasing].coords.z)
                     local street1 = GetStreetNameFromHashKey(s1)
@@ -248,7 +249,7 @@ CreateThread(function()
                         streetLabel = streetLabel .. ' | ' .. street2
                     end
                     local info = {
-                        label = Lang:t('info.casing'),
+                        label = 'Bullet sleeve',
                         type = 'casing',
                         street = streetLabel:gsub("%'", ""),
                         ammolabel = Config.AmmoLabels[QBCore.Shared.Weapons[Casings[CurrentCasing].type]['ammotype']],
@@ -264,7 +265,7 @@ CreateThread(function()
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos - vector3(Blooddrops[CurrentBlooddrop].coords.x, Blooddrops[CurrentBlooddrop].coords.y,
                 Blooddrops[CurrentBlooddrop].coords.z)) < 1.5 then
-                DrawText3D(Blooddrops[CurrentBlooddrop].coords.x, Blooddrops[CurrentBlooddrop].coords.y, Blooddrops[CurrentBlooddrop].coords.z, Lang:t('blood_text', {value = DnaHash(Blooddrops[CurrentBlooddrop].citizenid)}))
+                DrawText3D(Blooddrops[CurrentBlooddrop].coords.x, Blooddrops[CurrentBlooddrop].coords.y, Blooddrops[CurrentBlooddrop].coords.z, '~g~G~w~ - Blood ~b~#' .. DnaHash(Blooddrops[CurrentBlooddrop].citizenid))
                 if IsControlJustReleased(0, 47) then
                     local s1, s2 = GetStreetNameAtCoord(Blooddrops[CurrentBlooddrop].coords.x, Blooddrops[CurrentBlooddrop].coords.y, Blooddrops[CurrentBlooddrop].coords.z)
                     local street1 = GetStreetNameFromHashKey(s1)
@@ -274,7 +275,7 @@ CreateThread(function()
                         streetLabel = streetLabel .. ' | ' .. street2
                     end
                     local info = {
-                        label = Lang:t('info.blood'),
+                        label = 'Blood sample',
                         type = 'blood',
                         street = streetLabel:gsub("%'", ""),
                         dnalabel = DnaHash(Blooddrops[CurrentBlooddrop].citizenid),
@@ -289,7 +290,7 @@ CreateThread(function()
             local pos = GetEntityCoords(PlayerPedId())
             if #(pos - vector3(Fingerprints[CurrentFingerprint].coords.x, Fingerprints[CurrentFingerprint].coords.y,
                 Fingerprints[CurrentFingerprint].coords.z)) < 1.5 then
-                DrawText3D(Fingerprints[CurrentFingerprint].coords.x, Fingerprints[CurrentFingerprint].coords.y, Fingerprints[CurrentFingerprint].coords.z, Lang:t('info.fingerprint_text'))
+                DrawText3D(Fingerprints[CurrentFingerprint].coords.x, Fingerprints[CurrentFingerprint].coords.y, Fingerprints[CurrentFingerprint].coords.z, '~g~G~w~ - Fingerprint ')
                 if IsControlJustReleased(0, 47) then
                     local s1, s2 = GetStreetNameAtCoord(Fingerprints[CurrentFingerprint].coords.x,Fingerprints[CurrentFingerprint].coords.y, Fingerprints[CurrentFingerprint].coords.z)
                     local street1 = GetStreetNameFromHashKey(s1)
@@ -299,7 +300,7 @@ CreateThread(function()
                         streetLabel = streetLabel .. ' | ' .. street2
                     end
                     local info = {
-                        label = Lang:t('info.fingerprint'),
+                        label = 'Fingerprint',
                         type = 'fingerprint',
                         street = streetLabel:gsub("%'", ""),
                         fingerprint = Fingerprints[CurrentFingerprint].fingerprint
@@ -353,3 +354,57 @@ CreateThread(function()
         end
     end
 end)
+
+-- CreateThread(function()
+--     local currentWeapon = GetSelectedPedWeapon(PlayerPedId())
+--     local isArmed = false
+--     local timeCheck = 0
+--     while true do
+--         Wait(50)
+--         if not isArmed then
+--             if IsPedArmed(PlayerPedId(), 7) and not IsPedArmed(PlayerPedId(), 1) then
+--                 currentWeapon = GetSelectedPedWeapon(PlayerPedId())
+--                 isArmed = true
+--                 timeCheck = 7
+--             end
+--         end
+--         if isArmed then
+--             if PlayerJob.name ~= 'police' then
+--                 if IsPedShooting(PlayerPedId()) and not IsSilentWeapon(currentWeapon) and IsPedNearby() then
+--                     local coords = GetEntityCoords(PlayerPedId())
+--                     local automatic = false
+--                     if QBCore.Shared.Weapons[currentWeapon]['ammotype'] ~= 'AMMO_PISTOL' then
+--                         automatic = true
+--                     end
+--                     local s1, s2 = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
+--                     local streetLabel = GetStreetNameFromHashKey(s1)
+--                     local street2 = GetStreetNameFromHashKey(s2)
+--                     if street2 and street2 ~= '' then
+--                         streetLabel = streetLabel .. ' ' .. street2
+--                     end
+--                     if IsPedInAnyVehicle(PlayerPedId(), true) then
+--                         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+--                         local vehicleInfo = {
+--                             plate = QBCore.Functions.GetPlate(vehicle),
+--                             name = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle))
+--                         }
+--                         TriggerServerEvent('police:server:GunshotAlert', streetLabel, automatic, true, coords, vehicleInfo)
+--                     else
+--                         TriggerServerEvent('police:server:GunshotAlert', streetLabel, automatic, false, coords)
+--                     end
+--                     Wait(15000)
+--                 end
+
+--                 if timeCheck == 0 then
+--                     isArmed = false
+--                 else
+--                     timeCheck = timeCheck - 1
+--                 end
+--             else
+--                 Wait(5000)
+--             end
+--         else
+--             Wait(2500)
+--         end
+--     end
+-- end)

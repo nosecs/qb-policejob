@@ -9,6 +9,7 @@ onDuty = false
 local DutyBlips = {}
 
 -- Functions
+
 local function CreateDutyBlips(playerId, playerLabel, playerJob, playerLocation)
     local ped = GetPlayerPed(playerId)
     local blip = GetBlipFromEntity(ped)
@@ -41,6 +42,7 @@ local function CreateDutyBlips(playerId, playerLabel, playerJob, playerLocation)
 end
 
 -- Events
+
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     local player = QBCore.Functions.GetPlayerData()
     PlayerJob = player.job
@@ -122,23 +124,24 @@ end)
 
 RegisterNetEvent('police:client:sendBillingMail', function(amount)
     SetTimeout(math.random(2500, 4000), function()
-        local gender = Lang:t('info.mr')
+        local gender = "Mr."
         if QBCore.Functions.GetPlayerData().charinfo.gender == 1 then
-            gender = Lang:t('info.mrs')
+            gender = "Mrs."
         end
         local charinfo = QBCore.Functions.GetPlayerData().charinfo
         TriggerServerEvent('qb-phone:server:sendNewMail', {
-            sender = Lang:t('email.sender'),
-            subject = Lang:t('email.subject'),
-            message = Lang:t('email.message', {value = gender, value2 = charinfo.lastname, value3 = amount}),
+            sender = "Central Judicial Collection Agency",
+            subject = "Debt collection",
+            message = "Dear " .. gender .. " " .. charinfo.lastname ..
+                ",<br /><br />The Central Judicial Collection Agency (CJCA) charged the fines you received from the police.<br />There is <strong>$" ..
+                amount .. "</strong> withdrawn from your account.<br /><br />Kind regards,<br />Mr. I.K. Graai",
             button = {}
         })
     end)
 end)
 
 RegisterNetEvent('police:client:UpdateBlips', function(players)
-    if PlayerJob and (PlayerJob.name == 'police' or PlayerJob.name == 'ambulance') and
-        onDuty then
+    if PlayerJob and (PlayerJob.name == 'police' or PlayerJob.name == 'ambulance') and onDuty then
         if DutyBlips then
             for k, v in pairs(DutyBlips) do
                 RemoveBlip(v)
@@ -159,12 +162,12 @@ RegisterNetEvent('police:client:policeAlert', function(coords, text)
     local street1, street2 = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
     local street1name = GetStreetNameFromHashKey(street1)
     local street2name = GetStreetNameFromHashKey(street2)
-    QBCore.Functions.Notify({text = text, caption = street1name.. ' ' ..street2name}, 'police')
-    PlaySound(-1, "Lose_1st", "GTAO_FM_Events_Soundset", 0, 0, 1)
+    --QBCore.Functions.Notify({text = text, caption = street1name.. ' ' ..street2name}, 'police')
+    --PlaySound(-1, "Lose_1st", "GTAO_FM_Events_Soundset", 0, 0, 1)
     local transG = 250
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
     local blip2 = AddBlipForCoord(coords.x, coords.y, coords.z)
-    local blipText = Lang:t('info.blip_text', {value = text})
+    local blipText = 'Police Alert - ' ..text
     SetBlipSprite(blip, 60)
     SetBlipSprite(blip2, 161)
     SetBlipColour(blip, 1)
@@ -202,13 +205,31 @@ RegisterNetEvent('police:client:SendToJail', function(time)
     TriggerEvent("prison:client:Enter", time)
 end)
 
-RegisterNetEvent('police:client:SendPoliceEmergencyAlert', function()
-    local Player = QBCore.Functions.GetPlayerData()
-    TriggerServerEvent('police:server:policeAlert', Lang:t('info.officer_down', {lastname = Player.charinfo.lastname, callsign = Player.metadata.callsign}))
-    TriggerServerEvent('hospital:server:ambulanceAlert', Lang:t('info.officer_down', {lastname = Player.charinfo.lastname, callsign = Player.metadata.callsign}))
+RegisterNetEvent('police:client:rifleback', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    if GetEntityModel(vehicle) == `fs11cvpi` or `fs14chgr` or `fs18chgr` or `fs16fpiu` or `fs14tahoe` then   -- add your police cars here
+        TriggerEvent('qb-inventory:client:set:busy', true)
+        QBCore.Functions.Progressbar("open-rifle-back", "Opening Rifle Back...", 2500, false, true, {
+            disableMovement = true,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            TriggerServerEvent("inventory:server:OpenInventory", "stash", 'Rifleback_'..QBCore.Functions.GetPlayerData().citizenid, {maxweight = 26000, slots = 2})
+            TriggerEvent("inventory:client:SetCurrentStash", 'Rifleback_'..QBCore.Functions.GetPlayerData().citizenid)
+        end, function()
+            TriggerEvent('qb-inventory:client:set:busy', false)
+            QBCore.Functions.Notify("Canceled...", "error")
+        end)
+    else
+        QBCore.Functions.Notify("Thats not a Police vehicle!", "error")
+    end
 end)
 
+-- NUI
+
 -- Threads
+
 CreateThread(function()
     for k, station in pairs(Config.Locations["stations"]) do
         local blip = AddBlipForCoord(station.coords.x, station.coords.y, station.coords.z)
