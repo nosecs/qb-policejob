@@ -18,6 +18,8 @@ Config.Locations = {
         [1] = vector3(444.0, -981.09, 30.69),               -- Mission Row PD
         [2] = vector3(387.5, 795.86, 190.49),               -- Park Ranger
         [3] = vector3(-446.54, 6012.94, 32.29),             -- Paleto Bay PD
+        [4] = vector3(837.59, -1290.1, 28.24),              -- La Mesa PD
+        [5] = vector3(1834.09, 3677.84, 34.19),             -- Sandy Shores PD
     },
     ["vehicle"] = {
         --[1] = vector4(448.159, -1017.41, 28.562, 90.654),
@@ -28,6 +30,8 @@ Config.Locations = {
         [1] = vector3(461.39, -996.21, 30.69),              -- Mission Row PD
         [2] = vector3(385.58, 799.64, 190.49),              -- Park Ranger
         [3] = vector3(-439.21, 6010.93, 37.0),              -- Paleto Bay PD
+        [4] = vector3(852.75, -1311.32, 28.24),             -- La Mesa PD
+        [5] = vector3(1841.69, 3678.54, 34.19),             -- Sandy Shores PD
     },
     ["impound"] = {
         --[1] = vector4(436.68, -1007.42, 27.32, 180.0),
@@ -36,10 +40,12 @@ Config.Locations = {
     ["helicopter"] = {
         [1] = vector4(449.168, -981.325, 43.691, 87.234),   -- Mission Row PD
         [2] = vector4(-475.43, 5988.353, 31.716, 31.34),    -- Paleto Bay PD
+        [3] = vector4(1853.44, 3706.17, 33.97, 28.46),      -- Sandy Shores PD
     },
     ["armory"] = {
         [1] = vector3(482.42, -995.52, 30.69),              -- Mission Row PD
         [2] = vector3(-449.24, 6014.88, 37.0),              -- Paleto Bay PD
+        [3] = vector3(1837.0, 3686.36, 34.19),              -- Sandy Shores PD
     },
     ["trash"] = {
         --[1] = vector3(439.0907, -976.746, 30.776),
@@ -48,16 +54,21 @@ Config.Locations = {
         [1] = vector3(474.84, -1013.3, 26.27),              -- Mission Row PD
         [2] = vector3(384.77, 795.3, 187.46),               -- Park Ranger
         [3] = vector3(-440.6, 6010.79, 27.58),              -- Paleto Bay PD
+        [4] = vector3(1818.59, 3666.48, 34.19),             -- Sandy Shores PD
     },
     ["evidence"] = {
         [1] = vector3(474.9, -995.26, 26.27),               -- Mission Row PD
         [2] = vector3(472.87, -995.21, 26.27),              -- Mission Row PD
         [3] = vector3(-452.76, 5999.5, 37.01),              -- Paleto Bay PD
+        [4] = vector3(848.69, -1312.74, 28.24),             -- La Mesa PD
+        [5] = vector3(1830.69, 3680.05, 38.86),             -- Sandy Shores PD
     },
     ["stations"] = {
-        [1] = {label = "Police Station", coords = vector4(428.23, -984.28, 29.76, 3.5)},
-        [2] = {label = "Prison", coords = vector4(1845.903, 2585.873, 45.672, 272.249)},
-        [3] = {label = "Police Station Paleto", coords = vector4(-451.55, 6014.25, 31.716, 223.81)},
+        [1] = {label = "Mission Row PD", coords = vector4(428.23, -984.28, 29.76, 3.5)},
+        [2] = {label = "Bolingbroke Penitentiary", coords = vector4(1845.903, 2585.873, 45.672, 272.249)},
+        [3] = {label = "Paleto Bay PD", coords = vector4(-451.55, 6014.25, 31.716, 223.81)},
+        [4] = {label = "La Mesa PD", coords = vector4(825.14, -1289.97, 28.24, 88.84)},
+        [5] = {label = "Sandy Shores PD", coords = vector4(1837.18, 3672.62, 34.18, 29.61)},
     },
 }
 
