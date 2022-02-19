@@ -130,6 +130,11 @@ end
 RegisterNetEvent('heli:spotlight', function(serverID, state)
 	local heli = GetVehiclePedIsIn(GetPlayerPed(GetPlayerFromServerId(serverID)), false)
 	SetVehicleSearchlight(heli, state, false)
+	TriggerServerEvent("policejob:syncSpotlight", heli, state)
+end)
+
+RegisterNetEvent("policejob:syncSpotlight", function (heli, state)
+	SetVehicleSearchlight(heli, state, false)
 end)
 
 -- Threads

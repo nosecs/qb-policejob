@@ -13,3 +13,7 @@ end)
 AddEventHandler("heli:spotlight_update", function(playerId, data)
     TriggerClientEvent("heli:spotlight_update", -1, playerId, data)
 end)
+
+RegisterNetEvent("policejob:syncSpotlight", function (heli, state)
+    TriggerClientEvent("policejob:syncSpotlight" ,-1, heli, state)
+end)
