@@ -133,14 +133,19 @@ RegisterNetEvent('heli:spotlight', function(serverID, state)
 	TriggerServerEvent("policejob:syncSpotlight", heli, state)
 end)
 
-RegisterNetEvent("policejob:syncSpotlight", function (heli, state)
-	SetVehicleSearchlight(heli, state, false)
+RegisterNetEvent("policejob:syncSpotlight", function (helicopters)
+	while helicopters[0] ~= nil do
+		DrawSpotLightWithShadow(camcoords, forward_vector, 255, 255, 255, 500.0, 0.5, 0.5, 10.0, 0.6, 1)
+		Citizen.Wait(0)
+	end
 end)
+
+
 
 -- Threads
 CreateThread(function()
 	while true do
-		Wait(0)
+		Citizen.Wait(0)
 		if LocalPlayer.state.isLoggedIn then
 			if PlayerJob.name == 'police' and onDuty then
 				if IsPlayerInPolmav() then
@@ -175,7 +180,7 @@ CreateThread(function()
 						SetTimecycleModifierStrength(0.3)
 						local scaleform = RequestScaleformMovie("HELI_CAM")
 						while not HasScaleformMovieLoaded(scaleform) do
-							Wait(0)
+							Citizen.Wait(0)
 						end
 						local cam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
 						AttachCamToEntity(cam, heli, 0.0,0.0,-1.5, true)
@@ -210,15 +215,18 @@ CreateThread(function()
 								end]]
 							end
 							if spotlight_state then
-								local rotation = GetCamRot(cam, 2)
+								TriggerServerEvent("policejob:addHelicopter", heli, cam)
+								--[[local rotation = GetCamRot(cam, 2)
 								local forward_vector = RotAnglesToVec(rotation)
 								local camcoords = GetCamCoord(cam)
-								DrawSpotLightWithShadow(camcoords, forward_vector, 255, 255, 255, 500.0, 0.5, 0.5, 10.0, 0.6, 1)
-								
+								--DrawSpotLightWithShadow(camcoords, forward_vector, 255, 255, 255, 500.0, 0.5, 0.5, 10.0, 0.6, 1)
+								--TriggerServerEvent("policejob:syncSpotlight", camcoords, forward_vector)
 								--[[TriggerServerEvent("heli:spotlight_update", currentPlayerId, {
 									comcoords = camcoords,
 									forward_vector = forward_vector
 								})]]
+							else
+								TriggerServerEvent("policejob:removeHelicopter", heli)
 							end
 							if IsControlJustPressed(0, toggle_vision) then
 								PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
@@ -271,7 +279,7 @@ CreateThread(function()
 							PushScaleformMovieFunctionParameterFloat(GetCamRot(cam, 2).z)
 							PopScaleformMovieFunctionVoid()
 							DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-							Wait(0)
+							Citizen.Wait(0)
 						end
 						helicam = false
 						ClearTimecycleModifier()
@@ -283,13 +291,13 @@ CreateThread(function()
 						SetSeethrough(false)
 					end
 				else
-					Wait(2000)
+					Citizen.Wait(2000)
 				end
 			else
-				Wait(2000)
+				Citizen.Wait(2000)
 			end
 		else
-			Wait(2000)
+			Citizen.Wait(2000)
 		end
 	end
 end)
