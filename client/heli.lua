@@ -203,22 +203,22 @@ CreateThread(function()
 								PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
 								spotlight_state = not spotlight_state
 
-								if spotlight_state then
+								--[[if spotlight_state then
 									TriggerServerEvent("heli:spotlight_on", currentPlayerId, 0)
 								else
 									TriggerServerEvent("heli:spotlight_off", currentPlayerId, 0)
-								end
+								end]]
 							end
 							if spotlight_state then
 								local rotation = GetCamRot(cam, 2)
 								local forward_vector = RotAnglesToVec(rotation)
 								local camcoords = GetCamCoord(cam)
-								DrawSpotLightWithShadow(camcoords, forward_vector, 255, 255, 255, 500.0, 0.5, 0.5,
-											  10.0, 0.6, 1)
-								TriggerServerEvent("heli:spotlight_update", currentPlayerId, {
+								DrawSpotLightWithShadow(camcoords, forward_vector, 255, 255, 255, 500.0, 0.5, 0.5, 10.0, 0.6, 1)
+								
+								--[[TriggerServerEvent("heli:spotlight_update", currentPlayerId, {
 									comcoords = camcoords,
 									forward_vector = forward_vector
-								})
+								})]]
 							end
 							if IsControlJustPressed(0, toggle_vision) then
 								PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
